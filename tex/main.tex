@@ -1,0 +1,276 @@
+%\documentclass[conf]{new-aiaa}
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage[version=4]{mhchem}
+%\usepackage{siunitx}
+\usepackage{longtable,tabularx}
+\usepackage{setspace}
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\doublespacing
+\setlength\LTleft{0pt} 
+\title{Novel Coulomb Staged-Docking with Bipolar Electrospray Thrusters using Predefined-Time Sliding Mode Control
+	}
+\author{Gaurav Kumar, grvk@iitk.ac.in}
+\begin{document}
+	\maketitle
+	We will use modified equinoctial elements $\Delta$:
+	\begin{align}
+		&p = a(1-e^2)\\
+		&f = e\cos{(\omega+ \Omega)} \\
+		&g = e\sin{(\omega+\Omega)} \\
+		&h= \tan{\frac{i}{2}}\cos{\Omega}\\
+		&k = \tan{\frac{i}{2}}\sin{\Omega}\\
+		&L = \Omega+\omega+\theta
+	\end{align}
+	Define the terms:
+	\begin{align}
+		&\alpha^2 = h^2-k^2\\
+		&s^2 = 1 + h^2 + k^2\\
+		&w = 1 + f\cos{L} + g\sin{L}\\
+		&r = \frac{p}{w}
+	\end{align}
+	Gauss variational equations for modified equinoctial elements: 
+	\begin{align}
+		&\dot p = \frac{2p}{w}\sqrt{\frac{p}{\mu}} u_2\\
+		&\dot f = \sqrt{\frac{p}{\mu}}\left[u_1\sin{L} + \{(w+1)\cos{L} + f\}\frac{u_2}{w} - (h\sin{L} - k\cos{L})\frac{gu_3}{w} \right]\\
+		&\dot g = \sqrt{\frac{p}{\mu}}\left[-u_1\cos{L} + \{(w+1)\sin{L} + g\}\frac{u_2}{w} + (h\sin{L} - k\cos{L})\frac{gu_3}{w} \right]\\ 
+		&\dot h = \sqrt{\frac{p}{\mu}}\frac{s^2u_3}{2w}\cos{L}\\
+		&\dot k = \sqrt{\frac{p}{\mu}}\frac{s^2u_3}{2w}\sin{L}\\
+		&\dot L = 
+		\sqrt{\mu p}\left(\frac{w}{p}\right)^2 + \frac{1}{w}\sqrt{\frac{p}{\mu}}(h\sin{L}-k\cos{L})u_3
+	\end{align}
+	This can be written in compact form as,
+	\begin{align}
+		\dot \Delta = A(\Delta)U + \rho
+	\end{align}
+	where $U$ is the control thrust vector, 
+	\begin{align}
+		A = \sqrt{\frac{p}{\mu}}\begin{bmatrix} 0 & \frac{2p}{w} & 0\\ \sin{L} &\frac{1 }{w}\{(w+1)\cos{L} + f\} & -\frac{g}{w}(h\sin{L} - k\cos{L}) \\
+			-\cos{L} & \frac{1}{w}\{(w+1)\sin{L} + g\} & \frac{g}{w}(h\sin{L} - k\cos{L}) \\
+			0 & 0& \frac{s^2u_n}{2w}\cos{L}\\
+			0 & 0 & \frac{s^2u_n}{2w}\sin{L} \\
+			0 & 0 & \frac{1}{w}(h\sin{L}-k\cos{L})
+		\end{bmatrix}
+	\end{align}
+	\begin{align}
+		\rho = \begin{bmatrix} 0 & 0 & 0 &0& 0 & \sqrt{\mu p}\left(\frac{w}{p}\right)^2 \end{bmatrix}^T
+	\end{align}
+	\newline
+	Now for our case, let us define 
+	\begin{equation}
+		\delta \Delta = \Delta_T-\Delta_C
+	\end{equation}
+	where \textit{T} and \textit{C} indicates target and chaser respectively. Taking derivatives w.r.t time,
+	\begin{align}
+		\dot \delta \Delta &= \dot \Delta_T - \dot \Delta_C \\
+		&= \begin{bmatrix} 0&0&0&0&0&\eta_T
+		\end{bmatrix}^T - A(\Delta_C)U-\rho\\
+		& = \eta_T -  A(\Delta_C)U-\rho
+	\end{align}
+	Note that we assume the chief is fully capable of resisting Coulomb forces from satellite 1 to stay in initial orbit. \newline
+	Now our goal is, using $U$ drive :
+	\[
+	\xi = \delta \Delta-\delta \Delta_r \to 0
+	\]
+	where $\delta \Delta_r$ is the tracking trajectory which take care of geometrical parameters for docking. \newline 
+	Now contribution for \textit{u}:
+	\begin{enumerate}
+		\item Coulomb force: This depends on relative distance between satellites. This distance can be calculated using $\delta e$. 
+		\item Staging force: Force exerted due to staging of hybrid thrusters. This force significantly reduces mission time. This force need calculation based on mission duration.
+		\item Bipolar electrospray thrusters are used which which aids in spacecraft charging when used in binary switching mode.
+	\end{enumerate}
+	\section{Coulomb force Calculation}
+	Relation between ECI frame position vector and mean orbital elements is given by:
+	\begin{align}
+		\mathbf{r} = r\begin{bmatrix}
+			\cos{\Omega}\cos{\theta}-\sin{\Omega}\sin{\theta}\cos{i} \\ \sin{\Omega}\cos{\theta}-\cos{\Omega}\sin{\theta}\cos{i} \\ \sin{\theta}\sin{i}
+		\end{bmatrix} 
+	\end{align}
+	Using the relation between modified equinoctial elements and mean orbital elements, the relation between position vector in ECI frame and modified equinoctial elements is :
+	\begin{align}
+		\mathbf{r} = \frac{r}{s^2}\begin{bmatrix}
+			\cos{L}+\alpha^2\cos{L}+2hk\sin{L} \\ \sin{L}- \alpha^2\sin{L}+2hk\cos{L} \\ 2(h\sin{L}-k\cos{L})
+		\end{bmatrix}  
+	\end{align}
+	Let $\mathbf{r_C},q_C$ and $\mathbf{r_C},q_C$ denotes the position vector and charge of chief and deputy respectively. Then the coulomb force on the two bodies will be;
+	\begin{align}
+		F_q = \frac{kq_T q_C}{| \mathbf{r_T-r_C}|^3}(\mathbf{r_T-r_C})
+	\end{align}
+	Now converting charges into potential of bodies assuming them to be spherical,
+	\begin{align}
+		F_q = \frac{1}{kR_T R_C}\frac{V_T V_C}{| \mathbf{r_T-r_C}|^3}(\mathbf{r_T-r_C})
+	\end{align}
+	\section{Bipolar hybrid thrust and residual voltage}
+	Bipolar thrusters used for hybrid thrusting induces residue charges on the spacecraft. Our aim is to use these to our advantage using binary switching.
+	The relation for thrust magnitude is 
+	\begin{align}
+		F_h = I_{th}\sqrt{\frac{2(V_{th}+V_i)}{(q/m)}} 
+	\end{align}
+	Hence for a desired $F_h$, the induced voltage $V_i$ is
+	\begin{align}
+		V_i = (q/2m)\left(\frac{F_h}{I_{th}}\right)^2 - V_{th}
+	\end{align}
+	Then $F_q$ is modified as:
+	\begin{align}
+		F_q^* = \frac{1}{kR_T R_C}\frac{V_T (V_C+V_i)}{| \mathbf{r_T-r_C}|^3}(\mathbf{r_T-r_C})
+	\end{align}
+	\section{Staging}
+	Next we derive staging. Let total duration between each staging phase be $t_s$. Then for time between $nt_s$ and $(n+1)t_s$, the mass of the system will be 
+	\begin{align}
+		m_n = m_0 - nm_s 
+	\end{align}
+	where $m_0$ and $m_s$ are initial and ejection stage mass respectively.
+	\section{Dynamics}
+	Hence at $n^{th}$ docking stage, $U$ can be written as:
+	\begin{align}
+		U_n = \begin{bmatrix}
+			(F^*_{q_1}+F_h)/m_n \\ (F^*_{q_2}+F_h)/m_n \\
+			(F^*_{q_3}+F_h)/m_n
+		\end{bmatrix}
+	\end{align}
+	Hence the dynamics will become,
+	\begin{align}
+		\dot \xi =  \eta_T -  A(\Delta_C)U-\rho - \dot \delta \Delta_r + \Gamma_d   
+	\end{align}
+	where A is nonlinear matrix. 
+	\section{Control formulation}
+	\subsection{Lyapunov based control}
+	\begin{theorem}
+	The time-varying nonlinear system described by (33) is asymptotic stable for \begin{align}
+		U = A(\Delta_C)^{-1}(\eta_T + P^{-1}\xi - \rho-\dot\delta\Delta_r)
+	\end{align}  where P is a symmetric positive definite matrix.	
+	\end{theorem} 
+\begin{proof}
+ We will prove the claim using Barbalat's lemma.  Choose a scalar function $V$ as
+\begin{align}
+	V = \frac{1}{2}\xi^TP\xi
+\end{align}
+Then taking time derivative noting P is symmetric,
+\begin{align}
+	\dot V &= \xi^TP\dot\xi \\
+	& = \xi^TP(\eta_T -  A(\Delta_C)U-\rho - \dot \delta \Delta_r)
+\end{align}
+Now substituting (34) above,
+\begin{align}
+	\dot V = -\xi^T\xi
+\end{align}
+This implies $V$ and hence error $\xi$ is bounded.
+Hence \begin{align}
+	\ddot V = -\xi^TP^{-1}\xi
+\end{align}
+is bounded. 
+Now from Barbalat's lemma, since $\ddot V$ is bounded, $\dot V \to 0$ as $t\to \infty$. Hence $\xi \to 0$ as $t\to \infty$, proving asymptotic stability of the system.
+
+\end{proof}
+This control, although guarantees asymptotic stability, requires exact knowledge of dynamics and can perform poorly in case of disturbances. Hence to increase robustness and guarantee time convergence we derive another controller.
+	\subsection{Predefined-time Sliding mode control}
+	Consider a general system:
+	\begin{align}
+		\dot x = f(x,t;\rho)
+	\end{align}
+	\begin{definition}[Finite Time Stability] The origin of system is finite time stable if it is globally asymptotic stable and for any arbitrary initial condition $x_0$, there exist a finite time $0\leq\tau< \infty$ such that $x(t,x_0) = 0, \forall t\geq\tau$.    
+	\end{definition}
+	\begin{definition}[Settling Time Set] Settling time set for a system is defined as \begin{align}
+			T = \{T(x_0): \text{inf}\{\tau\geq0 : x(t,x_0) = 0\; ,\forall t\geq\tau \}
+			\;,\forall x_0\in \mathbb{R}^n  \}
+		\end{align}    
+	\end{definition}
+	\begin{definition}[Fixed Time Stability] The origin of system is fixed time stable if it is finite time stable and the settling time set is bounded: $\exists \;0\leq T_{\text{max}}< \infty$ such that $ T(x_0) \leq T_{\text{max}} \; \forall x_0 \in \mathbb{R}^n$.  Define the tightest bound on $ T(x_0) $ as $ T_s $, i.e, $ \text{sup}\; T(x_0) = T_s $ 
+	\end{definition}
+	\begin{definition}[Predefined Time Stability]
+		The origin of system is predefined time stable if it is fixed time stable and the settling set bound $T_{\text{max}}$ is tunable, i.e, it is a function of system parameter $\rho$.
+	\end{definition}
+	\begin{lemma}
+		Let $V:\mathbb{R}^n \to \mathbb{R}_{+}\cup \{0\}$ be a continuous, positive definite and radially unbounded function with $ V(x) = 0 $ iff $ x = 0 $. If there exists a $ T_c \in \mathbb{R_{+}}$ such that along the system trajectories \begin{align}
+			\dot V \leq -\frac{1}{pT_c}e^{V^p}V^{1-p} 
+			\end{align} 
+		$ \forall x \neq 0 $ and $ 0<p\leq 1 $, then the system is predefined time stable with $ T_c = T_{\text{max}} $. For equality, $ T_c = T_s $
+	\end{lemma}
+\begin{lemma}
+	For any initial condition $ x_0 \in \mathbb{R}^n $, the system \begin{align}
+		\dot x = -\frac{1}{T_c}\Phi_{m,q}(x)
+	\end{align}
+is global predefined time stable with $ T_c = T_s $ where, \begin{align}
+	\Phi_{m,q}(x) = \frac{1}{mq}e^{||x||^{mq}}\frac{x}{||x||^{mq}} 
+\end{align}
+with $ m\geq1 $ and $ 0<q\leq\frac{1}{m} $.
+\end{lemma}
+\begin{proof}
+	Take $ V(x) = ||x||^m $ where $ x\in \mathbb{R}^n $.
+	Taking derivative along system trajectories,
+\begin{align}
+\dot V(x) &= m||x||^{m-2}x^T\dot x \\
+& = -\frac{1}{qT_c}e^{||x||^{mq}}\frac{x^Tx}{||x||^{m(1-q)}} \\
+& = -\frac{1}{qT_c}e^{V^q}V^{1-q}
+\end{align}
+Hence using Lemma 1, we conclude that the system is global predefined time stable with settling time $ T_s = T_c $ .
+\end{proof}
+\begin{remark}
+It should be noted that convergence characteristic of the system is affected by choice of the product $ mq $. It is essential for a dynamic system to have a smooth convergence and produce a least steep initial response so that abrupt changes in dynamical properties can be avoided. [Refer] showed that for smooth convergence $ mq < \frac{1}{2} $. Fig ()  shows the optimal product for a range of initial conditions. 
+\end{remark}
+Finally, we derive the predefined time sliding mode control for our proposed system.
+
+\begin{theorem}
+Consider the system defined in []. Then the control 
+\begin{align}
+	U = \zeta^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]
+\end{align} 
+where \[\Pi(\xi) = \eta_T-\rho-\delta\dot\Delta_r\]
+$\sigma$ is the sliding variable defined as,
+\[\sigma  = \dot{\xi} + \frac{1}{T_1}\Phi_{m_1,q_1}(\xi)\]
+and \[\epsilon(\xi)= \frac{\partial \sigma}{\partial \xi}\]
+\[\zeta(\xi) = \epsilon(\xi)A(\Delta_C)\]
+such that non-vanishing bounded disturbance satisfies $||\Gamma_d(x,t)||\leq \gamma$ with $ 0< \gamma < \infty$, and $ T_1, T_2 $ taken as positive constants, make the system predefined stable with $\xi$ converging to zero within predefined time $T_1+T_2$.
+\end{theorem}
+\begin{proof}
+	Now consider the dynamics of sliding variable $ \sigma $ 
+	\begin{align}
+		\dot \sigma  &= \frac{\partial \sigma}{\partial \xi}\dot \xi \\
+		& = \epsilon(\xi)\dot \xi \\
+		& = \epsilon(\xi)(\eta_T-\rho-\delta\dot\Delta_r-A(\Delta_C)+\Gamma_d)\\
+		&= \epsilon(\xi)(\Pi(\xi)-A(\Delta_C)U+ \Gamma_d) 
+	\end{align}
+Substituting the proposed control above,
+\begin{align}
+	\dot \sigma &= \epsilon(\xi)(\Pi(\xi)-A(\Delta_C)\zeta^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]+ \Gamma_d) \\
+	& = \epsilon(\xi)(\Pi(\xi) - \epsilon(\xi)A(\Delta_C)A^{-1}(\Delta_C)\epsilon^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]+ \epsilon(\xi)\Gamma_d \\
+	& = -\gamma \frac{\sigma}{||\sigma||} - \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)+ \epsilon(\xi)\Gamma_d \\
+	& = -\gamma \frac{\sigma}{||\sigma||} - \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)+ \zeta(\xi)\bar\Gamma_d
+\end{align}
+Consider Lyapunov function $ V(\sigma) = ||\sigma||^m $ where $ \sigma\in \mathbb{R}^6$.
+Taking time derivative,
+\begin{align}
+	\dot V(\sigma) &= m_2||\sigma||^{m_2-2}\sigma^T\dot \sigma \\
+	& = m_2||\sigma||^{m_2-2}\sigma^T\left[\zeta(\xi)\bar\Gamma_d-\gamma \frac{\sigma}{||\sigma||} - \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]\\
+	& = -\frac{1}{q_2T_2}e^{||\sigma||^{m_2q_2}}||\sigma||^{m_2(1-q_2)} + m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||)
+	\end {align}
+	Since $\sigma^T\zeta(\xi)\bar\Gamma_d\leq ||\sigma||||\zeta(\xi)\bar\Gamma_d||\leq \gamma||\sigma||$, so the term $m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||)$ is non-positive with 
+	\begin{align}
+		\textbf{sup} \hspace{2mm}m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||) = 0 
+	\end{align}
+	Hence,
+	\begin{align}
+		\textbf{sup} \hspace{2mm} \dot V = -\frac{1}{q_2T_2}e^{||\sigma||^{m_2q_2}}||\sigma||^{m_2(1-q_2)}  = -\frac{1}{q_2T_2}e^{V^{q_2}}V^{1-q_2}
+	\end{align}
+Hence using Lemma 1, $\sigma$ robustly converges to zero in predefined time $T_2$. \newline
+Next after convergence of $\sigma$, the system slides on the surface with dynamics $\sigma =0$ or 
+\begin{align}
+\dot{\xi} + \frac{1}{T_1}\Phi_{m_1,q_1}(\xi) = 0 \\
+\dot{\xi}  = -\frac{1}{T_1}\Phi_{m_1,q_1}(\xi)
+\end{align}
+Using Lemma 2, $ \xi $ converges to zero within predefined time $T_1$. \newline
+Hence, the whole system settles to zero within predefined time $ T_1+T_2 $. 
+\end{proof}
+\end{document}
+
+

@@ -1,0 +1,30 @@
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{longtable,tabularx}
+\usepackage{setspace}
+\doublespacing
+\setlength\LTleft{0pt} 
+\title{Novel Coulomb Staged-Docking using Predefined-Time Sliding Mode Control}
+\author{Gaurav Kumar, grvk@iitk.ac.in}
+\begin{document}
+	\maketitle
+\begin{itemize}
+	\item The use of electrostatic actuation for formation flying and on-orbit proximity operations has been gaining attention in the Aerospace community in recent years. With its high specific impulse and low plume impingement, this method of propulsion provides a sustainable and efficient way for proximity maneuvers. 
+	\item Previous attempts to model charged interactions between spacecraft considered linearized motion dynamics, which failed to provide an accurate trajectory description and disregarded non-circular orbits. These non-linearities in motion must be addressed as precise control of Voltage is required for autonomous rendezvous and docking.
+	\item  This paper introduces a novel method of spacecraft-docking that utilizes Coulomb control with staged bipolar electrospray thrusters in binary switching mode. 
+	\item  The system consists of two spacecraft: chaser and target in GEO orbit, which aims to first rendezvous and then dock with each other. Both spacecraft are capable of controlled charging. The target has hybrid bipolar electrospray thrusters with binary switching mode: the polarity of ejected ions can be changed as per requirement.
+	\item The use of electrospray thrusters imparts a residual voltage to the target and is used to aid Coulomb control through binary switching, thus reducing the charging effort. 
+	\item System dynamics is modeled using Gauss variational equation for modified equinoctial elements. This particular choice of orbital element set avoids singularities while integrating for trajectory propagation. 
+	  
+	\item The whole mission time is divided into multiple stages. At the start of each stage, one array of electrospray thrusters falls off from the target, accelerating the spacecraft in the process.
+	
+	\item A new predefined-time sliding mode controller is derived with a fixed time converging sliding manifold, which guarantees pre-set time convergence along with robustness to unmodeled perturbations and system uncertainties. Each stage's staging time is set to controller settling time, thus ensuring timed convergence. 
+	\item Simulation are carried out for different number of stages and initial conditions. The result is compared with a Lyapunov based control used in previously to demonstrate the superiority of proposed method. 
+\end{itemize}
+	
+\end{document}	
