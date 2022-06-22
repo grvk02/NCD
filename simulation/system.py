@@ -1,3 +1,4 @@
+import numpy as np
 class NCD:
 
 	def __init__(self,delta_t,delta_c,t):
