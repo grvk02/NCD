@@ -4,19 +4,22 @@ from scipy.integrate import solve_ivp
 from astropy import units as u
 from poliastro.core import elements as elem
 mu = 1; 
-r = [-6045, -3490, 2500] * u.km
-v = [-3.457, 6.618, 2.533] * u.km / u.s
+r_c = [-6045, -3490, 2500] * u.km
+v_c = [-3.457, 6.618, 2.533] * u.km / u.s
+r_t= [6045, 3490, -2500] * u.km
+v_t = [3.457, -6.618, -2.533] * u.km / u.s
 Xi=[]
+V=[]
 Time=[]
 class NCD:
 
-	def __init__(self,delta_t,delta_c,t,T,N,U,Lambda_d):
+	def __init__(self,delta_t,delta_c,t,T,t_0,U,Lambda_d):
 		'''initialize the class'''
 		self.delta_t = delta_t
 		self.delta_c = delta_c
 		self.T = T
 		self.t = t
-		self.N = N
+		self.t_0 = t_0
 		self.U = U
 		self.Lambda_d = Lambda_d
 	def w(self, delta):
@@ -33,7 +36,9 @@ class NCD:
 		return np.sqrt(delta[0]/mu)*np.array([0, 2*delta[0]/self.w(delta),0],[np.sin(delta[5]),(1/self.w(delta))*((self.w(delta)+1)*np.cos(delta[5])+delta[1]), -(delta[2]/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5]))],[-np.cos(delta[5],(1/self.w(delta))*((self.w(delta)+1)*np.sin(delta[5])+delta[2]), (delta[3]/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5])))],[0,0, (self.s2(delta)/(2*self.w(delta))*np.cos(delta[5]))],[0,0,(self.s2(delta)/(2*self.w(delta))*np.sin(delta[5])) ],[0,0, (1/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5]))])
 	def votage_calculation(self):
 		'''calculate the votage'''
-		pass
+		r_c,v_c = elem.mee2rv(self.delta_c[0], self.delta_c[1], self.delta_c[2], self.delta_c[3], self.delta_c[4], self.delta_c[5], self.delta_c[6])
+		r_t,v_t = elem.mee2rv(self.delta_t[0], self.delta_t[1], self.delta_t[2], self.delta_t[3], self.delta_t[4], self.delta_t[5], self.delta_t[6])
+		stage = np.ceil(self.t/self.t_0)
 	def control(self,xi):
 		'''control law'''
 		self.U = xi*np.array([0,0,0])
@@ -54,15 +59,19 @@ class NCD:
 			self.delta_t = self.delta_t + self.target(self.delta_t)*dt	
 			self.delta_c = self.delta_c + self.chaser(self.delta_c,xi)*dt
 			self.t=self.t+dt
+			if (self.t>self.T):
+				break
 			xi = self.delta_t-self.delta_c
 			Xi.append(xi)
 			Time.append(self.t)
 		
-		def plot_data(self):
-			'''plot XI data vs time'''
-			plt.plot(Time,Xi)
+	def plot_data(self):
+		'''plot Xi and V vs time'''
+		plt.plot(Time,Xi)
+		plt.plot(Time,V)
+		plt.show()	
 
-'''global solution_t,solution_c
-		solution_t =solve_ivp(self.target, [0,self.T], self.delta_t, t_eval = np.arange(0,self.T,dt))
-		solution_c =solve_ivp(self.chaser, [0,self.T], self.delta_c, t_eval = np.arange(0,self.T,dt))'''			
 
+
+
+		
