@@ -13,7 +13,6 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \newtheorem{lemma}{Lemma}
-\doublespacing
 \title{Novel Coulomb Staged-Docking with Bipolar Electrospray Thrusters using Predefined-Time Sliding Mode Control
 	}
 \author{Gaurav Kumar, grvk@iitk.ac.in}
@@ -74,7 +73,7 @@
 		& = \rho_t -  A(\Delta_c)U-\rho_c
 	\end{align}
 	Note that we assume the chief is fully capable of resisting Coulomb forces from satellite 1 to stay in initial orbit. \newline
-	Now our goal is, using $U$ drive :
+	Now our goal is, using $U$ drive:
 	\[
 	\xi = \delta \Delta-\delta \Delta_r \to 0
 	\]
@@ -92,7 +91,7 @@
 			\cos{\Omega}\cos{\theta}-\sin{\Omega}\sin{\theta}\cos{i} \\ \sin{\Omega}\cos{\theta}-\cos{\Omega}\sin{\theta}\cos{i} \\ \sin{\theta}\sin{i}
 		\end{bmatrix} 
 	\end{align}
-	Using the relation between modified equinoctial elements and mean orbital elements, the relation between position vector in ECI frame and modified equinoctial elements is :
+	Using the relation between modified equinoctial elements and mean orbital elements, the relation between position vector in ECI frame and modified equinoctial elements is:
 	\begin{align}
 		\mathbf{r} = \frac{r}{s^2}\begin{bmatrix}
 			\cos{L}+\alpha^2\cos{L}+2hk\sin{L} \\ \sin{L}- \alpha^2\sin{L}+2hk\cos{L} \\ 2(h\sin{L}-k\cos{L})
@@ -110,16 +109,18 @@
 	Bipolar thrusters used for hybrid thrusting induces residue charges on the spacecraft. Our aim is to use these to our advantage using binary switching.
 	The relation for thrust magnitude is 
 	\begin{align}
-		F_h = I_{th}\sqrt{\frac{2(V_{th}+V_i)}{(q/m)}} 
+		F_h = I_{th}\sqrt{\frac{2(V_{th}+V_c)}{(q/m)}} 
 	\end{align}
-	Hence for a desired $F_h$, the induced voltage $V_i$ is
+	Hence for a desired $F_h$, the chaser voltage $V_c$ is
 	\begin{align}
-		V_i = (q/2m)\left(\frac{F_h}{I_{th}}\right)^2 - V_{th}
+		V_c = (q/2m)\left(\frac{F_h}{I_{th}}\right)^2 - V_{th}
 	\end{align}
+	\begin{comment}
 	Then $F_q$ is modified as:
 	\begin{align}
 		F_q^* = \frac{1}{kR_t R_c}\frac{V_t (V_c+V_i)}{| \mathbf{r_t-r_c}|^3}(\mathbf{r_t-r_c})
-	\end{align}
+	\end{align}	
+	\end{comment}
 	\section{Staging}
 	Next we derive staging. Let total duration between each staging phase be $t_s$. Then for time between $nt_s$ and $(n+1)t_s$, the mass of the system will be 
 	\begin{align}
@@ -130,8 +131,8 @@
 	Hence at $n^{th}$ docking stage, $U$ can be written as:
 	\begin{align}
 		U_n = \begin{bmatrix}
-			(F^*_{q_1}+F_h)/m_n \\ (F^*_{q_2}+F_h)/m_n \\
-			(F^*_{q_3}+F_h)/m_n
+			(F_{q_1}+F_h)/m_n \\ (F_{q_2}+F_h)/m_n \\
+			(F_{q_3}+F_h)/m_n
 		\end{bmatrix}
 	\end{align}
 	Hence the dynamics will become,
@@ -143,18 +144,18 @@
 	\subsection{Lyapunov based control}
 	\begin{theorem}
 	The time-varying nonlinear system described by (33) is asymptotic stable for \begin{align}
-		U = A(\Delta_c)^{-1}(\rho_t + P^{-1}\xi - \rho_c-\dot\delta\Delta_r)
+		U = A(\Delta_c)^{-1}(\rho_t + {P^{-1}}\xi - \rho_c-\dot\delta\Delta_r)
 	\end{align}  where P is a symmetric positive definite matrix.	
 	\end{theorem} 
 \begin{proof}
  We will prove the claim using Barbalat's lemma.  Choose a scalar function $V$ as
 \begin{align}
-	V = \frac{1}{2}\xi^TP\xi
+	V = \frac{1}{2}\xi^T{P}\xi
 \end{align}
 Then taking time derivative noting P is symmetric,
 \begin{align}
-	\dot V &= \xi^TP\dot\xi \\
-	& = \xi^TP(\rho_t -  A(\Delta_c)U-\rho_c - \dot \delta \Delta_r)
+	\dot V &= \xi^T{P}\dot\xi \\
+	& = \xi^T{P}(\rho_t -  A(\Delta_c)U-\rho_c - \dot \delta \Delta_r)
 \end{align}
 Now substituting (34) above,
 \begin{align}
@@ -162,7 +163,7 @@ Now substituting (34) above,
 \end{align}
 This implies $V$ and hence error $\xi$ is bounded.
 Hence \begin{align}
-	\ddot V = -\xi^TP^{-1}\xi
+	\ddot V = -\xi^T{P^{-1}}\xi
 \end{align}
 is bounded. 
 Now from Barbalat's lemma, since $\ddot V$ is bounded, $\dot V \to 0$ as $t\to \infty$. Hence $\xi \to 0$ as $t\to \infty$, proving asymptotic stability of the system.
@@ -206,10 +207,10 @@ with $ m\geq1 $ and $ 0<q\leq\frac{1}{m} $.
 	Taking derivative along system trajectories,
 \begin{align}
 \dot V(x) &= m||x||^{m-2}x^T\dot x \\
-& = -\frac{1}{qT_c}e^{||x||^{mq}}\frac{x^Tx}{||x||^{m(1-q)}} \\
+& = -\frac{1}{qT_c}e^{||x||^{mq}}\frac{{x^T}x}{||x||^{m(1-q)}} \\
 & = -\frac{1}{qT_c}e^{V^q}V^{1-q}
 \end{align}
-Hence using Lemma 1, we conclude that the system is global predefined time stable with settling time $ T_s = T_c $ .
+Hence using Lemma 1, we conclude that the system is global predefined time stable with settling time $ T_s = T_c $.
 \end{proof}
 \begin{remark}
 It should be noted that convergence characteristic of the system is affected by choice of the product $ mq $. It is essential for a dynamic system to have a smooth convergence and produce a least steep initial response so that abrupt changes in dynamical properties can be avoided. [Refer] showed that for smooth convergence $ mq < \frac{1}{2} $. Fig ()  shows the optimal product for a range of initial conditions. 
@@ -239,7 +240,7 @@ such that non-vanishing bounded disturbance satisfies $||\Gamma_d(x,t)||\leq \ga
 Substituting the proposed control above,
 \begin{align}
 	\dot \sigma &= \epsilon(\xi)(\Pi(\xi)-A(\Delta_c)\zeta^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]+ \Gamma_d) \\
-	& = \epsilon(\xi)(\Pi(\xi) - \epsilon(\xi)A(\Delta_c)A^{-1}(\Delta_c)\epsilon^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]+ \epsilon(\xi)\Gamma_d \\
+	& = \epsilon(\xi)(\Pi(\xi) - \epsilon(\xi)A(\Delta_c)A^{-1}(\Delta_c)\epsilon^{-1}(\xi)\left[\epsilon(\xi)\Pi(\xi)+ \gamma \frac{\sigma}{||\sigma||} + \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)\right]+ \epsilon(\xi)\Gamma_d) \\
 	& = -\gamma \frac{\sigma}{||\sigma||} - \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)+ \epsilon(\xi)\Gamma_d \\
 	& = -\gamma \frac{\sigma}{||\sigma||} - \frac{1}{T_2}\Phi_{m_2,q_2}(\sigma)+ \zeta(\xi)\bar\Gamma_d
 \end{align}
@@ -252,11 +253,11 @@ Taking time derivative,
 	\end {align}
 	Since $\sigma^T\zeta(\xi)\bar\Gamma_d\leq ||\sigma||||\zeta(\xi)\bar\Gamma_d||\leq \gamma||\sigma||$, so the term $m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||)$ is non-positive with 
 	\begin{align}
-		\textbf{sup} \hspace{2mm}m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||) = 0 
+		\sup \hspace{2mm}m_2||\sigma||^{m_2-2}(\sigma^T\zeta(\xi)\bar\Gamma_d -\gamma||\sigma||) = 0 
 	\end{align}
 	Hence,
 	\begin{align}
-		\textbf{sup} \hspace{2mm} \dot V = -\frac{1}{q_2T_2}e^{||\sigma||^{m_2q_2}}||\sigma||^{m_2(1-q_2)}  = -\frac{1}{q_2T_2}e^{V^{q_2}}V^{1-q_2}
+		\sup \hspace{2mm} \dot V = -\frac{1}{q_2T_2}e^{||\sigma||^{m_2q_2}}||\sigma||^{m_2(1-q_2)}  = -\frac{1}{q_2T_2}e^{V^{q_2}}V^{1-q_2}
 	\end{align}
 Hence using Lemma 1, $\sigma$ robustly converges to zero in predefined time $T_2$. \newline
 Next after convergence of $\sigma$, the system slides on the surface with dynamics $\sigma =0$ or 
@@ -267,6 +268,21 @@ Next after convergence of $\sigma$, the system slides on the surface with dynami
 Using Lemma 2, $ \xi $ converges to zero within predefined time $T_1$. \newline
 Hence, the whole system settles to zero within predefined time $ T_1+T_2 $. 
 \end{proof}
+\section{Optimization}
+We will find the optimal voltage on the crafts to minimize the thrust current.
+From the dynamics, for any of the three direction  say i,  
+\begin{align}
+	&F_{q_i} + F_{h_i} = m_nU_{n_i} \\
+	&\frac{1}{kR_t R_c}\frac{V_t V_c}{| \mathbf{r_t-r_c}|^3}(\mathbf{r_t-r_c})_i + I_{{th}_i}\sqrt{\frac{2|V_{th}+V_c|}{(q/m)}}  =  m_nU_{n_i} \\
+	&\beta_i V_tV_c + \chi_i |I_{{th}_i}|\sqrt{\psi |V_{th}+V_c|} = m_nU_{n_i} \\
+\end{align}
+where,
+\begin{align}
+	&\beta_i = \frac{1}{kR_t R_c}\frac{(\mathbf{r_t-r_c})_i}{| \mathbf{r_t-r_c}|^3} \\
+	&\chi_i \in \{-1,1\} \\
+	&\psi = \frac{2}{q/m} \\
+\end{align}
+Substituting,
 \end{document}
 
 

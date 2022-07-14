@@ -35,15 +35,16 @@ class NCD:
 	def A(self,delta):
 		'''A matrix'''
 		return np.sqrt(delta[0]/mu)*np.array([0, 2*delta[0]/self.w(delta),0],[np.sin(delta[5]),(1/self.w(delta))*((self.w(delta)+1)*np.cos(delta[5])+delta[1]), -(delta[2]/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5]))],[-np.cos(delta[5],(1/self.w(delta))*((self.w(delta)+1)*np.sin(delta[5])+delta[2]), (delta[3]/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5])))],[0,0, (self.s2(delta)/(2*self.w(delta))*np.cos(delta[5]))],[0,0,(self.s2(delta)/(2*self.w(delta))*np.sin(delta[5])) ],[0,0, (1/self.w(delta))*(delta[3]*np.sin(delta[5])-delta[4]*np.cos(delta[5]))])
-	def votage_calculation(self):
+	def voltage_calculation(self):
 		'''calculate the votage'''
 		r_c,v_c = elem.mee2rv(self.delta_c[0], self.delta_c[1], self.delta_c[2], self.delta_c[3], self.delta_c[4], self.delta_c[5], self.delta_c[6])
 		r_t,v_t = elem.mee2rv(self.delta_t[0], self.delta_t[1], self.delta_t[2], self.delta_t[3], self.delta_t[4], self.delta_t[5], self.delta_t[6])
 		stage = np.ceil(self.t/self.t_0)
+		#optimize the voltage required and Thrust current
 	def control(self,xi):
 		'''control law'''
 		self.U = xi*np.array([0,0,0])
-		self.votage_calculation()
+		self.voltage_calculation()
 	def target(self,delta):
 		'''target dynamics'''
 		return self.rho(delta) + self.Lambda_d*np.array([0,0,0,0,0,0])
