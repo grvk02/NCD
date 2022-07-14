@@ -13,14 +13,15 @@ V=[]
 Time=[]
 class NCD:
 
-	def __init__(self,delta_t,delta_c,t,T,t_0,U,Lambda_d):
+	def __init__(self,delta_t,delta_c,t_0,T_c,N,U,Lambda_d):
 		'''initialize the class'''
 		self.delta_t = delta_t
 		self.delta_c = delta_c
-		self.T = T
-		self.t = t
-		self.t_0 = t_0
+		self.T_c = T_c
+		self.t = t_0
+		self.N = N
 		self.U = U
+		self.n=0
 		self.Lambda_d = Lambda_d
 	def w(self, delta):
 		'''w matrix'''
@@ -45,7 +46,7 @@ class NCD:
 		self.votage_calculation()
 	def target(self,delta):
 		'''target dynamics'''
-		return np.array([0,0,0,0,0,np.sqrt(mu*delta[0])*((self.w(delta)/delta[0])**2)])  + self.Lambda_d*np.array([0,0,0,0,0,0])
+		return self.rho(delta) + self.Lambda_d*np.array([0,0,0,0,0,0])
 	def chaser(self,delta,xi):
 		'''chaser dynamics'''
 		self.control(xi)
@@ -55,12 +56,14 @@ class NCD:
 		dt = 0.1
 		xi = self.delta_t-self.delta_c
 		Xi.append(xi)
-		while (xi>0):
+		while xi>0:
 			self.delta_t = self.delta_t + self.target(self.delta_t)*dt	
 			self.delta_c = self.delta_c + self.chaser(self.delta_c,xi)*dt
 			self.t=self.t+dt
-			if (self.t>self.T):
-				break
+			if self.t>self.T_c:
+				self.n=self.n+1
+				if self.n>self.N:
+					break
 			xi = self.delta_t-self.delta_c
 			Xi.append(xi)
 			Time.append(self.t)
