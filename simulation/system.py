@@ -4,6 +4,7 @@ from scipy.integrate import solve_ivp
 from astropy import units as u
 from poliastro.core import elements as elem
 mu = 1; 
+P = np.eye(6)
 r_c = [-6045, -3490, 2500] * u.km
 v_c = [-3.457, 6.618, 2.533] * u.km / u.s
 r_t= [6045, 3490, -2500] * u.km
@@ -41,17 +42,17 @@ class NCD:
 		r_t,v_t = elem.mee2rv(self.delta_t[0], self.delta_t[1], self.delta_t[2], self.delta_t[3], self.delta_t[4], self.delta_t[5], self.delta_t[6])
 		stage = np.ceil(self.t/self.t_0)
 		#optimize the voltage required and Thrust current
-	def control(self,xi):
+	def control(self,delta_t,delta_c,xi):
 		'''control law'''
-		self.U = xi*np.array([0,0,0])
+		self.U = np.matmul(np.linalg.inv(self.A(delta_c)),(self.rho(delta_t)-self.rho(delta_c) + np.matmul(np.linalg.inv(P),xi)))
 		self.voltage_calculation()
 	def target(self,delta):
 		'''target dynamics'''
 		return self.rho(delta) + self.Lambda_d*np.array([0,0,0,0,0,0])
-	def chaser(self,delta,xi):
+	def chaser(self,delta_t,delta_c,xi):
 		'''chaser dynamics'''
-		self.control(xi)
-		return self.rho(delta) + np.dot(self.A(delta),self.U) + self.Lambda_d*np.array([0,0,0,0,0,0])	
+		self.control(delta_t,delta_c,xi)
+		return self.rho(delta_c) + np.dot(self.A(delta_c),self.U) + self.Lambda_d*np.array([0,0,0,0,0,0])	
 	def trajectory_prop(self):
 		'''propagate the trajectory of the chaser and target'''
 		dt = 0.1
@@ -59,7 +60,7 @@ class NCD:
 		Xi.append(xi)
 		while xi>0:
 			self.delta_t = self.delta_t + self.target(self.delta_t)*dt	
-			self.delta_c = self.delta_c + self.chaser(self.delta_c,xi)*dt
+			self.delta_c = self.delta_c + self.chaser(self.delta_t,self.delta_c,xi)*dt
 			self.t=self.t+dt
 			if self.t>self.T_c:
 				self.n=self.n+1
