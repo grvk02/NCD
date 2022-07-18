@@ -274,15 +274,23 @@ From the dynamics, for any of the three direction  say i,
 \begin{align}
 	&F_{q_i} + F_{h_i} = m_nU_{n_i} \\
 	&\frac{1}{kR_t R_c}\frac{V_t V_c}{| \mathbf{r_t-r_c}|^3}(\mathbf{r_t-r_c})_i + I_{{th}_i}\sqrt{\frac{2|V_{th}+V_c|}{(q/m)}}  =  m_nU_{n_i} \\
-	&\beta_i V_tV_c + \chi_i |I_{{th}_i}|\sqrt{\psi |V_{th}+V_c|} = m_nU_{n_i} \\
+	&\beta_i V_tV_c + \chi_i |I_{{th}_i}|\sqrt{\psi |\kappa_i|V_{th}|+V_c|} = m_nU_{n_i} \\
 \end{align}
 where,
 \begin{align}
 	&\beta_i = \frac{1}{kR_t R_c}\frac{(\mathbf{r_t-r_c})_i}{| \mathbf{r_t-r_c}|^3} \\
-	&\chi_i \in \{-1,1\} \\
+	&\chi_i, \kappa_i \in \{-1,1\} \\
 	&\psi = \frac{2}{q/m} \\
 \end{align}
-Substituting,
+Rearranging,
+\begin{align}
+	|I_{{th}_i}| = \frac{m_nU_{n_i}-\beta_i V_tV_c}{\chi_i\sqrt{\psi |\kappa_i|V_{th}|+V_c|}}
+\end{align}
+Coverting to vector form, the static optimal problem can be stated as,
+\begin{align}
+&\min_{V_t,V_c,\boldsymbol{\chi},\boldsymbol{\kappa}} ||\mathbf{I_{{th}}}|| \\
+&s.t \hspace{2mm}  \boldsymbol{\beta}V_tV_c + \boldsymbol{\chi}\odot|\mathbf{I_{{th}}}|\odot\sqrt{\psi |\boldsymbol{\kappa}|V_{th}|+V_c\mathbf{I_{3}}|} = m_n\mathbf{U_{n}}	
+\end{align}
 \end{document}
 
 
